@@ -17,6 +17,7 @@
         <h1>Proxy log</h1>
 
         <div id="list"></div>
+        
         <script src="/socket.io/socket.io.js"></script>
         <script>
             var socket = io('http://localhost:8080');
@@ -25,6 +26,7 @@
                 socket.emit('event', { my: 'data' });
             });
             socket.on('log', function(data){
+                console.log(data.status.code);
                 document.getElementById("list").innerHTML = document.getElementById("list").innerHTML + "<p>" + data.url + "</p>";
             });
         </script>
