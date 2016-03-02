@@ -1,0 +1,24 @@
+{
+  "name": "BadProxy",
+  "version": "1.0.0",
+  "description": "",
+  "main": "proxy.js",
+  "scripts": {
+    "test": "mocha -R spec",
+    "start": "node proxy.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.13.4",
+    "http-proxy": "^1.13.2",
+    "node-kaomoji": "^0.1.0",
+    "request": "^2.69.0",
+    "socket.io": "^1.4.5"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "mocha": "^2.4.5"
+  }
+}
