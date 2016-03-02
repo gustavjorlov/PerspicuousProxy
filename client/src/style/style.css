@@ -1,0 +1,37 @@
+p{
+    margin: 3px;
+    background: #ececec;
+    padding: 5px;
+    border-radius: 3px;
+    width: 500px;
+}
+span.status_fail {
+    background: #fdd;
+    font-weight: bold;
+    padding: 2px 4px;
+    border-radius: 4px;
+    border: 1px solid #aaa;
+    margin-right: 10px;
+    font-family: consolas;
+}
+span.status_ok {
+    background: #dfd;
+    font-weight: bold;
+    padding: 2px 4px;
+    border-radius: 4px;
+    border: 1px solid #aaa;
+    margin-right: 10px;
+    font-family: consolas;
+}
+span.date {
+    margin-right: 10px;
+    color: #999;
+    font-family: consolas;
+}
+.log {
+    margin: 15px 10px;
+}
+.loglist {
+    border: 1px solid #bbb;
+    border-radius: 4px;
+}

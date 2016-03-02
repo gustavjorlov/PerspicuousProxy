@@ -14,7 +14,7 @@ app.post('/', function(req, res){
     socketHandle.emit('log', {
         date: req.body.date,
         contentType: req.body.contentType,
-        url: req.body.url +"yes",
+        url: req.body.url,
         status: {
             code: req.body.status,
             message: req.body.status
@@ -23,7 +23,7 @@ app.post('/', function(req, res){
 });
 
 app.get('/', function (req, res) {
-    res.sendfile(__dirname + '/index.html');
+    res.sendfile(__dirname + '/dist/index.html');
 });
 
 io.on('connection', function (socket) {

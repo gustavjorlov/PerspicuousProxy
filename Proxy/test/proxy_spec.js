@@ -5,24 +5,25 @@ var expect = chai.expect;
 describe("Proxy", function(){
     this.timeout(10000);
     it("should return google.com", function(done){
-        var options = {
-            url: "http://google.com",
-            proxy: "http://localhost:3000"
-        };
-
-        request(options, function(err, response, body){
-            done();
-        });
+        send("http://www.google.com", "GET", done);
     });
     it("should send a POST to jorlov.se", function(done){
-        var options = {
-            url: "http://jorlov.se",
-            method: "POST",
-            proxy: "http://localhost:3000"
-        };
+        send("http://jorlov.se", "POST", done);
+    });
+    it("should send a GET to sj.se", function(done){
+        send("http://www.sj.se", "GET", done);
+    });
+    it("should send a GET to volvocars.se", function(done){
+        send("http://www.volvocars.se", "GET", done);
+    });
 
-        request(options, function(err, response, body){
+    function send(url, method, done){
+        request({
+            url: url,
+            method: method,
+            proxy: "http://localhost:3000"
+        }, function(err, response, body){
             done();
         });
-    })
+    }
 });
