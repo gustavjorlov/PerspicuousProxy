@@ -29,6 +29,10 @@ proxy.on('proxyRes', function (proxyRes, req, res) {
     });
 });
 
+proxy.on('error', function(){
+    console.log(":(");
+});
+
 function handleRequest(req, res){
     proxy.web(req, res, {
         target: req.url

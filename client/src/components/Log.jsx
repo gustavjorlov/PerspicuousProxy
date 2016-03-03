@@ -1,12 +1,24 @@
 import React from 'react';
 
 export default class Log extends React.Component{
+    getStatusClassName(statusCode){
+        switch(statusCode){
+            case 200:
+                return "status_ok";
+            case 302:
+                return "status_decent";
+            case 404:
+                return "status_fail";
+            case 500:
+                return "status_fail_hard";
+        }
+        return "status_unknown";
+    }
     render(){
-        console.log("Log", this.props);
         const date = new Date(this.props.date);
         return (
             <div className="log">
-                <span className={this.props.statusCode === 200 ? 'status_ok' : 'status_fail'}>{this.props.statusCode}</span>
+                <span className={'status ' + this.getStatusClassName(this.props.statusCode)}>{this.props.statusCode}</span>
                 <span className="date">{date.toTimeString().slice(0,8)}</span>
                 <span className="url">{this.props.url}</span>
             </div>

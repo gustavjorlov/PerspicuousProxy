@@ -5,14 +5,10 @@ import makeStore from './store';
 
 var socket = io('http://localhost:8080');
 const store = makeStore();
-render({logs: []});
+render(store.getState().toJS());
 
-
-
-store.subscribe(function(){
-    const state = store.getState();
-    console.log("state", state);
-    render(state);
+store.subscribe( () => {
+    render(store.getState().toJS());
 });
 
 socket.on('log', (data) => {
@@ -23,10 +19,16 @@ socket.on('log', (data) => {
     });
 });
 
+function updateScroll(){
+    let element = document.getElementsByClassName("loglist")[0];
+    element.scrollTop = element.scrollHeight;
+}
+
 function render(state){
     console.log("render with", state);
     ReactDOM.render(
         <Application logs={state.logs} />,
         document.getElementById("list")
     );
+    updateScroll();
 }
