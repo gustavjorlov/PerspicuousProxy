@@ -11,6 +11,12 @@ http.createServer(function(req, res) {
     console.log("Listening to port 3000 as proxy");
 });
 
+function handleRequest(req, res){
+    proxy.web(req, res, {
+        target: req.url
+    });
+}
+
 proxy.on('proxyRes', function (proxyRes, req, res) {
     console.log("Sending POST to", req.url);
     request({
@@ -32,23 +38,3 @@ proxy.on('proxyRes', function (proxyRes, req, res) {
 proxy.on('error', function(){
     console.log(":(");
 });
-
-function handleRequest(req, res){
-    proxy.web(req, res, {
-        target: req.url
-    });
-}
-
-var Output = (function(){
-    function _formatQueryString(queryString){
-        return !queryString ? "" : queryString.split("&").map(function(item){
-            return "\t" + (item.split("=")[0]+"                ").slice(0,15) + item.split("=")[1];
-        }).join("\n");
-    }
-    function printRequest(url){
-        return "\n"+url.split("?")[0] + _formatQueryString(url.split("?")[1]);
-    }
-    return {
-        printRequest: printRequest
-    };
-})();
