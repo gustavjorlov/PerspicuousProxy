@@ -19,12 +19,12 @@ export default class Log extends React.Component{
     render(){
         const date = new Date(this.props.date);
         return (
-            <div className="log">
-                <span className={'status ' + this.getStatusClassName(this.props.statusCode)}>{this.props.statusCode}</span>
-                <span className="message">{this.props.statusMessage}</span>
-                <span className="date">{date.toTimeString().slice(0,8)}</span>
-                <span className="url">{this.props.url}</span>
-            </div>
+            <tr className="log">
+                <td className={'status ' + this.getStatusClassName(this.props.statusCode)}>{this.props.statusCode}</td>
+                <td className={'message ' + this.getStatusClassName(this.props.statusCode)}>{this.props.statusMessage}</td>
+                <td className="date">{date.toTimeString().slice(0,8)}</td>
+                <td className="url">{this.props.url}</td>
+            </tr>
         );
     }
 }
