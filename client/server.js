@@ -41,6 +41,6 @@ io.on('connection', function (socket) {
     socketHandle = socket;
 });
 
-server.listen(8080, function(){
-    console.log("Listening to port 8080 for browser");
+server.listen(9999, function(){
+    console.log("Listening to port 9999 for browser");
 });

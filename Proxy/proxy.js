@@ -1,5 +1,5 @@
 /* jshint strict:false */
-/* global console, require */
+/* global console, require, process */
 "use strict";
 var httpProxy = require('http-proxy');
 var proxy = httpProxy.createProxyServer({});
@@ -8,17 +8,14 @@ var express = require('express');
 
 var app = express();
 var settings = {
-    latency: 400,
-    failrate: 0
+    latency: 0,
+    failrate: 0,
+    fiddler: false
+};
+
+if(process.argv[2]){
+    settings.fiddler = "http://localhost:"+process.argv[2].split("=")[1];
 }
-
-app.get("/", function(req, res){
-    handleRequest(req, res);
-});
-
-app.post("/", function(req, res){
-    handleRequest(req, res);
-});
 
 app.post("/settings/:setting/:value", function(req, res){
     switch(req.params.setting){
@@ -32,58 +29,63 @@ app.post("/settings/:setting/:value", function(req, res){
     console.log(req.params.setting, req.params.value);
 });
 
+app.all("*", function(req, res){
+    handleRequest(req, res);
+});
+
 app.listen(3000, function(){
     console.log("Listening to port 3000 as proxy");
 });
 
 function handleRequest(req, res){
+    console.log("handleRequest");
     setTimeout(function(){
         if(Math.random() > settings.failrate){
             proxy.web(req, res, {
-                target: req.url
+                target: settings.fiddler || req.url
             }, handleError);
         }else{
-            res.sendStatus(404);
-            request({
-                method: "POST",
-                url: "http://localhost:8080",
-                json: true,
-                body: {
-                    date: new Date(),
-                    contentType: req.headers["content-type"],
-                    url: req.url,
-                    status: 999,
-                    message: "Failing"
-                }
-            }, function(err, response, body){
-                console.log(err, body);
+            //res.sendStatus(404);
+            messageToMonitor({
+                date: new Date(),
+                contentType: req.headers["content-type"],
+                url: req.url,
+                status: 999,
+                message: "Failing"
             });
         }
     }, settings.latency);
 }
 
-function handleError(e){
-    console.log("ERROR", e);
-}
-
 proxy.on('proxyRes', function (proxyRes, req, res) {
     console.log("Handling "+req.method+" to", req.url);
-    request({
-        method: "POST",
-        url: "http://localhost:8080",
-        json: true,
-        body: {
-            date: proxyRes.headers.date,
-            contentType: proxyRes.headers["content-type"],
-            url: req.url,
-            status: proxyRes.statusCode,
-            message: proxyRes.statusMessage
-        }
-    }, function(err, response, body){
-        console.log(err, body);
+    messageToMonitor({
+        date: proxyRes.headers.date,
+        contentType: proxyRes.headers["content-type"],
+        url: req.url,
+        status: proxyRes.statusCode,
+        message: proxyRes.statusMessage
     });
 });
 
 proxy.on('error', function(){
     console.log(":(");
 });
+
+
+function handleError(e){
+    console.log("ERROR", e);
+}
+
+function messageToMonitor(options){
+    request({
+        method: "POST",
+        url: "http://localhost:9999",
+        json: true,
+        body: options
+    }, function(err, response, body){
+        if(err){console.log(err);}else{
+            console.log(body.length);
+        }
+    });
+}

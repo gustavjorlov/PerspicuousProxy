@@ -10,7 +10,7 @@
     "copy:css": "cp src/style/style.css dist/style/style.css",
     "copy": "npm run copy:html && npm run copy:css",
     "compile:js": "browserify ./src/app -t babelify --debug -o dist/bundle.js",
-    "prebuild": "rimraf dist && mkdir dist && mkdir dist/style",
+    "prebuild": "rimraf dist && mkdir dist && cd dist && mkdir style && cd ..",
     "build": "npm run copy && npm run compile:js"
   },
   "keywords": [],

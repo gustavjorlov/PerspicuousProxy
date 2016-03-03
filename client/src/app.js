@@ -3,7 +3,7 @@ import React from 'react';
 import Application from './components/Application.jsx';
 import makeStore from './store';
 
-var socket = io('http://localhost:8080');
+var socket = io('http://localhost:9999');
 const store = makeStore();
 render(store.getState().toJS());
 
