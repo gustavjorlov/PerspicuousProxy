@@ -1,3 +1,5 @@
-Client/node_modules/
+client/node_modules/
+client/dist/
 Proxy/node_modules/
+Proxy/dist/
 .DS_Store
