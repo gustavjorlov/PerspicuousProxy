@@ -6,7 +6,7 @@ export default class Application extends React.Component{
     render(){
         return (
             <div id="application">
-                <Settings {...this.props} />
+                <Settings settings={this.props.settings} />
                 <LogList logs={this.props.logs}/>
             </div>
         );

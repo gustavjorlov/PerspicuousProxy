@@ -24,10 +24,17 @@ function updateScroll(){
     element.scrollTop = element.scrollHeight;
 }
 
+function handleSettings(setting, value){
+    socket.emit('setting', {
+        value: value,
+        setting: setting
+    });
+}
+
 function render(state){
     console.log("render with", state);
     ReactDOM.render(
-        <Application logs={state.logs} />,
+        <Application settings={handleSettings} logs={state.logs} />,
         document.getElementById("list")
     );
     updateScroll();

@@ -3,6 +3,7 @@ var app = express();
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
 var bodyParser = require('body-parser');
+var request = require('request');
 
 var socketHandle;
 
@@ -17,7 +18,7 @@ app.post('/', function(req, res){
         url: req.body.url,
         status: {
             code: req.body.status,
-            message: req.body.status
+            message: req.body.message
         }
     });
 });
@@ -28,8 +29,14 @@ app.get('/', function (req, res) {
 
 io.on('connection', function (socket) {
     console.log('connection');
-    socket.on('event', function (data) {
+    socket.on('setting', function (data) {
         console.log(data);
+        request({
+            url: "http://localhost:3000/settings/failrate/"+data.value,
+            method: "POST"
+        }, function(err, response, body){
+            console.log("Setting", err, body);
+        });
     });
     socketHandle = socket;
 });

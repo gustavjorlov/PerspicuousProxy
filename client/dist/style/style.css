@@ -74,6 +74,11 @@ span.status_unknown {
     background: #eee;
     color: #999;
 }
+span.status_manual_timeout{
+    background: #eee;
+    color: white;
+    border: 1px dashed black;
+}
 span.date {
     margin-right: 10px;
     color: #999;
@@ -93,4 +98,12 @@ span.date {
     border-radius: 4px;
     height: 100%;
     overflow: auto;
+}
+button {
+    border: none;
+    padding: 3px 10px;
+    margin: 4px;
+    background: #892343;
+    color: #ddd;
+    font-weight: bold;
 }
