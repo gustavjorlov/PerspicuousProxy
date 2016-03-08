@@ -23,6 +23,7 @@ describe("Proxy", function(){
             method: method,
             proxy: "http://localhost:3000"
         }, function(err, response, body){
+            console.log(response.statusCode);
             done();
         });
     }
