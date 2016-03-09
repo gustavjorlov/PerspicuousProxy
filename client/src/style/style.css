@@ -50,7 +50,7 @@ html, body {
 h1{
 	font-size: 50px;
 	font-style: italic;
-	margin: 15px;
+	padding: 15px;
 }
 p{
     margin: 3px;
@@ -121,6 +121,8 @@ thead {
     font-family: georgia;
     font-size: 25px;
     font-variant: small-caps;
+    background: white;
+    height: 30px;
 }
 tr.log td {
     vertical-align: middle;
@@ -134,14 +136,20 @@ tr.log:hover{
 	background: rgb(223, 225, 234);
 }
 td.code {
-	width: 10%;
+	width: 6%;
+}
+td.duration{
+	width: 12%;
 }
 td.message{
-	width: 20%;
-}
-td.time{
 	width: 10%;
 }
+td.contentType{
+	width: 15%;
+}
+td.time{
+	width: 7%;
+}
 td.url{
-	width: 60%;
+	width: 49.7%;
 }

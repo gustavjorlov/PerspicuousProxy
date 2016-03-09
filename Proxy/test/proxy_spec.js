@@ -3,7 +3,7 @@ var chai = require('chai');
 var expect = chai.expect;
 
 describe("Proxy", function(){
-    this.timeout(3000);
+    this.timeout(2000);
     it("should return google.com", function(done){
         send("http://www.google.com", "GET", done);
     });

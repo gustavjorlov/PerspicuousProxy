@@ -46,6 +46,8 @@ function _registerRoutes(app, settings){
 function handleRequest(req, res){
     var requestHandling = applyRulesToRequest(req, res);
     console.log(requestHandling);
+    res.setHeader('x-request-time', (+new Date()));
+    res.setHeader('x-delay-time', requestHandling.latency);
     setTimeout(function(){
         if(requestHandling.status === 200){
             sendRequestViaProxy(req, res);
@@ -100,36 +102,38 @@ function sendRequestViaProxy(req, res){
         target: Settings.get('fiddler') || req.url
     }, handleError);
 }
-proxy.on('proxyRes', function (proxyRes, req, res) {
-    console.log("Response "+req.method+" to", req.url);
-    sendMessageToMonitor({
-        date: proxyRes.headers.date,
-        contentType: proxyRes.headers["content-type"],
-        url: req.url,
-        status: proxyRes.statusCode,
-        message: proxyRes.statusMessage
-    });
-});
-
-proxy.on('proxyReq', function(proxyReq, req, res){
-    console.log(req.method + " Requesting: " + req.url);
-});
-
-proxy.on('error', function(){
-    console.log(":(");
-});
-
 function handleError(e){
     // console.log(Object.keys(e));
     console.log("ERROR", e.message);
     sendMessageToMonitor({
         date: new Date(),
         contentType: "-",
-        url: e.host + ":" + e.port,
+        url: e.message,
         status: e.code,
-        message: e.message
+        message: e.code
     });
 }
+
+proxy.on('proxyReq', function(proxyReq, req, res){
+    console.log(">>> Request:", req.method, req.url);
+    // proxyReq.setHeader('X-Special-Proxy-Header', new Date());
+
+});
+proxy.on('proxyRes', function (proxyRes, req, res) {
+    var duration = (+new Date())-res._headers['x-request-time'];
+    console.log("<<< Response", req.method, req.url, duration, "(delayed "+Math.round(res._headers['x-delay-time'])+" ms)");
+    sendMessageToMonitor({
+        date: proxyRes.headers.date,
+        contentType: proxyRes.headers["content-type"],
+        duration: duration + "ms (delayed "+Math.round(res._headers['x-delay-time'])+"ms)",
+        url: req.url,
+        status: proxyRes.statusCode,
+        message: proxyRes.statusMessage
+    });
+});
+proxy.on('error', function(){
+    console.log(":(");
+});
 
 /*******************************************************/
 /**************** MONITOR COMMUNICATION ****************/
@@ -142,9 +146,7 @@ function sendMessageToMonitor(options){
         json: true,
         body: options
     }, function(err, response, body){
-        if(err){console.log(err);}else{
-            console.log("Monitor got it");
-        }
+        if(err){console.log(err);}
     });
 }
 

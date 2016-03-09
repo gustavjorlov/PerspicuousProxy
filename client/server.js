@@ -11,10 +11,11 @@ app.use(express.static(__dirname + "/dist"));
 app.use(bodyParser.json());
 
 app.post('/', function(req, res){
-    console.log("POST to /", req.body);
+    console.log("POST to / with ", req.body.url);
     socketHandle.emit('log', {
         date: req.body.date,
         contentType: req.body.contentType,
+        duration: req.body.duration,
         url: req.body.url,
         status: {
             code: req.body.status,
