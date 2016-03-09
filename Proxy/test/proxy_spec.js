@@ -7,6 +7,9 @@ describe("Proxy", function(){
     it("should return google.com", function(done){
         send("http://www.google.com", "GET", done);
     });
+    it("should return asdfcadcsdc.com", function(done){
+        send("http://www.asdfcadcsdc.com", "GET", done);
+    });
     it("should send a POST to jorlov.se", function(done){
         send("http://jorlov.se", "POST", done);
     });
