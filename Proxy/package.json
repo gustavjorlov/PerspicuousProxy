@@ -6,6 +6,7 @@
   "scripts": {
     "test": "mocha -R spec",
     "start": "node app.js",
+    "start:fiddler": "npm start -- fiddler=8888",
     "clean": "rimraf dist/*",
     "compile": "babel src --out-dir dist",
     "build": "npm run clean && npm run compile"

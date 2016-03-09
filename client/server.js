@@ -21,6 +21,7 @@ app.post('/', function(req, res){
             message: req.body.message
         }
     });
+    res.sendStatus(200);
 });
 
 app.get('/', function (req, res) {

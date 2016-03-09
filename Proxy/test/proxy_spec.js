@@ -3,7 +3,7 @@ var chai = require('chai');
 var expect = chai.expect;
 
 describe("Proxy", function(){
-    this.timeout(1000);
+    this.timeout(3000);
     it("should return google.com", function(done){
         send("http://www.google.com", "GET", done);
     });
@@ -23,7 +23,7 @@ describe("Proxy", function(){
             method: method,
             proxy: "http://localhost:3000"
         }, function(err, response, body){
-            console.log(response.statusCode);
+            console.log(err, response.statusCode);
             done();
         });
     }

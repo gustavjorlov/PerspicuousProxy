@@ -5,61 +5,98 @@ var httpProxy = require('http-proxy');
 var proxy = httpProxy.createProxyServer({});
 var request = require('request');
 var express = require('express');
-
-var app = express();
-var settings = {
-    latency: 0,
-    failrate: 0,
-    fiddler: false
+var monitorUrl = "http://localhost:9999";
+var FAIL_TYPES = {
+    'SUCCESS': 200,
+    'TIMEOUT': 999,
+    'NOT_FOUND': 404,
+    'SERVER_ERROR': 500
 };
+var Settings = SettingsEngine();
+init();
 
-if(process.argv[2]){
-    settings.fiddler = "http://localhost:"+process.argv[2].split("=")[1];
+function init(){
+    var app = express();
+    _readCommandLineSettings(process.argv);
+    _registerRoutes(app);
+    app.listen(3000, function(){ console.log("Listening to port 3000 as proxy"); });
 }
 
-app.post("/settings/:setting/:value", function(req, res){
-    switch(req.params.setting){
-        case 'failrate':
-            settings.failrate = req.params.value;
-            break;
-        case 'latency':
-            settings.latency = req.params.value;
-            break;
+function _readCommandLineSettings(args){
+    if(args[2]){ Settings.set('fiddler', "http://localhost:"+args[2].split("=")[1]); }
+}
+
+function _registerRoutes(app, settings){
+    app.post("/settings/:setting/:value", function(req, res){
+        Settings.set(req.params.setting, req.params.value, sendResponse.bind(null, res));
+        console.log(req.params.setting, req.params.value);
+    });
+
+    app.all("*", handleRequest);
+
+    function sendResponse(res, err){
+        if(err){ res.sendStatus(500); }else{
+            res.sendStatus(200);
+        }
     }
-    console.log(req.params.setting, req.params.value);
-});
-
-app.all("*", function(req, res){
-    handleRequest(req, res);
-});
-
-app.listen(3000, function(){
-    console.log("Listening to port 3000 as proxy");
-});
+}
 
 function handleRequest(req, res){
-    console.log("handleRequest");
+    var requestHandling = applyRulesToRequest(req, res);
+    console.log(requestHandling);
     setTimeout(function(){
-        if(Math.random() > settings.failrate){
-            proxy.web(req, res, {
-                target: settings.fiddler || req.url
-            }, handleError);
+        if(requestHandling.status === 200){
+            sendRequestViaProxy(req, res);
         }else{
-            //res.sendStatus(404);
-            messageToMonitor({
+            res.status(Number(requestHandling.status));
+            res.send(Number(requestHandling.status));
+            sendMessageToMonitor({
                 date: new Date(),
                 contentType: req.headers["content-type"],
                 url: req.url,
-                status: 999,
-                message: "Failing"
+                status: requestHandling.status,
+                message: "Failed by Pretty Proxy"
             });
         }
-    }, settings.latency);
+    }, requestHandling.latency);
 }
 
+
+function applyRulesToRequest(){
+    var failResult = [failWithPercent, failForTimeSince].map(function(chainFunc){
+        return chainFunc();
+    }).filter(function(item){
+        return item !== FAIL_TYPES.SUCCESS;
+    });
+
+    return {
+        status: failResult.length === 0 ? FAIL_TYPES.SUCCESS : failResult[0],
+        latency: getLatency()
+    };
+}
+
+function failWithPercent(req, res){
+    if(Math.random() > Settings.get('failrate')){
+        return FAIL_TYPES.SUCCESS;
+    }else{
+        return FAIL_TYPES.TIMEOUT;
+    }
+}
+function failForTimeSince(req, res){
+    return FAIL_TYPES.SUCCESS;
+}
+function getLatency(){
+    return Math.random()*Settings.get('latency');
+}
+
+function sendRequestViaProxy(req, res){
+    proxy.web(req, res, {
+        target: Settings.get('fiddler') || req.url
+    }, handleError);
+}
 proxy.on('proxyRes', function (proxyRes, req, res) {
     console.log("Handling "+req.method+" to", req.url);
-    messageToMonitor({
+    sendMessageToMonitor({
         date: proxyRes.headers.date,
         contentType: proxyRes.headers["content-type"],
         url: req.url,
@@ -77,15 +114,41 @@ function handleError(e){
     console.log("ERROR", e);
 }
 
-function messageToMonitor(options){
+function sendMessageToMonitor(options){
     request({
         method: "POST",
-        url: "http://localhost:9999",
+        url: monitorUrl,
         json: true,
         body: options
     }, function(err, response, body){
         if(err){console.log(err);}else{
-            console.log(body.length);
+            console.log("Monitor got it");
         }
     });
 }
+
+function SettingsEngine(){
+    var settings = {
+        latency: 1000,
+        failrate: 0,
+        duration: 0,
+        sinceTime: 0,
+        failtype: 'rate', //'rate', 'time'
+        fiddler: false
+    };
+    function setSetting(key, value){
+        settings[key] = value;
+        console.log("settings saved", settings);
+    }
+    function getSetting(key){
+        return settings[key];
+    }
+    function getSettings(){
+        return settings;
+    }
+    return {
+        get: getSetting,
+        getAll: getSettings,
+        set: setSetting
+    }
+};
