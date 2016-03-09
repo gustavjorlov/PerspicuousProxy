@@ -4,3 +4,4 @@ Proxy/node_modules/
 Proxy/dist/
 .DS_Store
 npm-debug.log
+node_modules/

@@ -1,0 +1,27 @@
+{
+  "name": "PrettyProxy",
+  "version": "1.0.0",
+  "description": "Buzzword driven proxy for monitoring requests visually while getting the opportunity to interfere with the activity in a fun way",
+  "main": "index.js",
+  "scripts": {
+    "startclient": "cd client && npm start",
+    "startproxy": "cd Proxy && npm start",
+    "install": "cd client && npm install && cd ../Proxy && npm install && cd ..",
+    "start": "parallelshell 'npm run startproxy' 'npm run startclient'",
+    "build": "cd client && npm run build && cd .."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gustavjorlov/PrettyProxy.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/gustavjorlov/PrettyProxy/issues"
+  },
+  "homepage": "https://github.com/gustavjorlov/PrettyProxy#readme",
+  "devDependencies": {
+    "parallelshell": "^2.0.0"
+  }
+}
