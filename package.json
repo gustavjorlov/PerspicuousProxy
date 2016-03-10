@@ -7,7 +7,7 @@
     "startclient": "cd client && npm start",
     "startproxy": "cd Proxy && npm start",
     "build": "cd client && npm run build && cd ..",
-    "install": "cd client && npm install && cd ../Proxy && npm install && cd .. && npm run build",
+    "install": "npm install && cd client && npm install && cd ../Proxy && npm install && cd .. && npm run build",
     "start": "parallelshell 'npm run startproxy' 'npm run startclient'"
   },
   "repository": {
