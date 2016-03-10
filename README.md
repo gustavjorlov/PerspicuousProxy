@@ -2,8 +2,8 @@
 Buzzword driven proxy for monitoring requests visually while getting the opportunity to interfere with the activity in a fun way
 
 ## Usage
-1. Run `npm install`
-2. Run `npm start`
+1. Run `npm run build`
+2. Run `npm start` (or run `npm run start:fiddler` to make the proxy send all requests to your fiddler at port 8888)
 
 Now you are able to view the Pretty Proxy view in your browser at `http://localhost:9999`.
 Use `http://localhost:3000` as proxy when making requests from your application / server.

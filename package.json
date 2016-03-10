@@ -6,9 +6,12 @@
   "scripts": {
     "startclient": "cd client && npm start",
     "startproxy": "cd Proxy && npm start",
-    "build": "cd client && npm run build && cd ..",
-    "install": "npm install && cd client && npm install && cd ../Proxy && npm install && cd .. && npm run build",
-    "start": "parallelshell 'npm run startproxy' 'npm run startclient'"
+    "startproxy:fiddler": "cd Proxy && npm run start:fiddler",
+    "compile": "cd client && npm run build && cd ..",
+    "build": "npm install && cd client && npm install && cd ../Proxy && npm install && cd .. && npm run compile",
+    "start": "parallelshell \"npm run startproxy\" \"npm run startclient\"",
+    "start:fiddler": "parallelshell \"npm run startproxy:fiddler\" \"npm run startclient\"",
+    "echo": "parallelshell \"echo hej && echo arne\" \"ls\""
   },
   "repository": {
     "type": "git",
