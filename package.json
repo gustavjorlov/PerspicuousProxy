@@ -1,6 +1,6 @@
 {
   "name": "PrettyProxy",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Buzzword driven proxy for monitoring requests visually while getting the opportunity to interfere with the activity in a fun way",
   "main": "index.js",
   "scripts": {
